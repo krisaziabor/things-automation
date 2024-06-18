@@ -1,5 +1,8 @@
 {
+  "type": "module",
   "dependencies": {
-    "@linear/sdk": "^23.0.0"
+    "@linear/sdk": "^23.0.0",
+    "dotenv": "^16.4.5",
+    "node-fetch": "^3.3.2"
   }
 }
