@@ -1,30 +1,56 @@
+import { ApiKey } from "@linear/sdk";
 import dotenv from "dotenv";
 import fetch from "node-fetch";
 
 dotenv.config({ path: './private.env' });
 
-const API_KEY = process.env.LINEAR_API_KEY;
+const DOTCOM_API_KEY = process.env.DOTCOM_API_KEY;
+const YVA_API_KEY = process.env.YVA_API_KEY;
+const apiKeys = [DOTCOM_API_KEY, YVA_API_KEY];
 const url = "https://api.linear.app/graphql";
-const headers = {
+
+const headers = apiKey => ({
     "Content-Type": "application/json",
-    "Authorization": API_KEY,
-};
+    "Authorization": apiKey,
+});
+
+// const body = JSON.stringify({
+//     query:
+//         `{
+//             issues {
+//                 nodes {
+//                     title
+//                     assignee {
+//                         name
+//                     }
+//                 }
+//             }
+//         }`,
+// });
 
 const body = JSON.stringify({
     query:
         `{
-            issues {
+            viewer {
+                id
+                name
+                email
+        }
+            teams {
                 nodes {
-                    title
-                    assignee {
-                        name
-                    }
+                    id
+                    name
                 }
-            }
-        }`,
+        }
+    }`,
 });
 
-fetch(url, { method: "POST", headers, body })
+
+const fetchWithApiKey = (url, apiKey) => fetch(url, { method: "POST", headers: headers(apiKey), body })
     .then(response => response.json())
-    .then(data => console.log(JSON.stringify(data, null, 2)))
+    .then(body => console.log(JSON.stringify(body, null, 2)))
     .catch(error => console.error(error));
+
+apiKeys.forEach((apiKey) => {
+    fetchWithApiKey(url, apiKey);
+});
