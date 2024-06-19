@@ -15,54 +15,64 @@ const headers = apiKey => ({
     "Authorization": apiKey,
 });
 
+class Workspace {
+    constructor(id = "", key = "", cycle = "", prevCycle = "", nextCycle = "") {
+        this.id = id;
+        this.key = key;
+        this.cycle = cycle;
+        this.prevCycle = prevCycle;
+        this.nextCycle = nextCycle;
+    }
 
-// defining workspace struct
-const workspace = {
-    id: "",
-    key: "",
-    cycle: "",
-    prevCycle: "",
-    nextCycle: "",
-    getID: function () { return this.id; },
-    setID: function (id) { this.id = id; },
-    getKey: function () { return this.key; },
-    setKey: function (key) { this.key = key; },
-    getCycle: function () { return this.cycle; },
-    setCycle: function (cycle) { this.cycle = cycle; },
-    getPrevCycle: function () { return this.prevCycle; },
-    setPrevCycle: function (prevCycle) { this.prevCycle = prevCycle; },
-    getNextCycle: function () { return this.nextCycle; },
-    setNextCycle: function (nextCycle) { this.nextCycle = nextCycle; },
+    getID() {
+        return this.id;
+    }
+
+    setID(id) {
+        this.id = id;
+    }
+
+    getKey() {
+        return this.key;
+    }
+
+    setKey(key) {
+        this.key = key;
+    }
+
+    getCycle() {
+        return this.cycle;
+    }
+
+    setCycle(cycle) {
+        this.cycle = cycle;
+    }
+
+    getPrevCycle() {
+        return this.prevCycle;
+    }
+
+    setPrevCycle(prevCycle) {
+        this.prevCycle = prevCycle;
+    }
+
+    getNextCycle() {
+        return this.nextCycle;
+    }
+
+    setNextCycle(nextCycle) {
+        this.nextCycle = nextCycle;
+    }
 }
 
-
-// initializing workspace with empty variables
-function createWorkspace() {
-    return {
-        id: "",
-        key: "",
-        cycle: "",
-        prevCycle: "",
-        nextCycle: "",
-        getID: function () { return this.id; },
-        setID: function (id) { this.id = id; },
-        getKey: function () { return this.key; },
-        setKey: function (key) { this.key = key; },
-        getCycle: function () { return this.cycle; },
-        setCycle: function (cycle) { this.cycle = cycle; },
-        getPrevCycle: function () { return this.prevCycle; },
-        setPrevCycle: function (prevCycle) { this.prevCycle = prevCycle; },
-        getNextCycle: function () { return this.nextCycle; },
-        setNextCycle: function (nextCycle) { this.nextCycle = nextCycle; },
-    };
-}
 
 // initializing YVA and DOTCOM workspaces
-const yvaWorkspace = createWorkspace();
-const dotcomWorkspace = createWorkspace();
+const yvaWorkspace = new Workspace();
+const dotcomWorkspace = new Workspace();
 const workspaces = [yvaWorkspace, dotcomWorkspace];
-yvaWorkspace.setKey(YVA_API_KEY);
-dotcomWorkspace.setKey(DOTCOM_API_KEY);
+
+yvaWorkspace.key = YVA_API_KEY;
+dotcomWorkspace.key = DOTCOM_API_KEY;
 
 const initialQuery = JSON.stringify({
     query:
@@ -111,8 +121,8 @@ const fetchIDs = async () => {
 
 await fetchIDs();
 
-console.log(dotcomWorkspace.getID(), "DOTCOM");
-console.log(yvaWorkspace.getID(), "YVA");
+// console.log(dotcomWorkspace.getID(), "DOTCOM");
+// console.log(yvaWorkspace.getID(), "YVA");
 // console.log("DOTCOM DATA",dotcomWorkspace.getID(), dotcomWorkspace.getKey());
 // console.log("YVA DATA",yvaWorkspace.getID(), yvaWorkspace.getKey());
 
@@ -151,28 +161,3 @@ async function fetchAllIssues() {
 }
 
 fetchAllIssues();
-
-// const issues = await fetchIssues(dotcomWorkspace);
-// console.log(issues.data.team.issues.nodes);
-
-// const testQuery = JSON.stringify({
-//     query: `{
-//         team(id: "925721b4-6754-4615-a4d5-dfd450736505") {
-//             id
-//             name
-//             issues(first: 100) {
-//                 nodes {
-//                     id
-//                     title
-//                     description
-//                     createdAt
-//                     archivedAt
-//                 }
-//             }
-//         }
-//     }`
-// });
-
-// const test = await fetchQuery(url, YVA_API_KEY, testQuery);
-// console.log(test.data.team.issues);
-
