@@ -39,12 +39,14 @@ dotcomWorkspace.key = DOTCOM_API_KEY;
 
 
 // general function for fetching data from API
-const fetchQuery = (url, apiKey, query) => fetch(url, { method: "POST", headers: headers(apiKey), body:query })
-    .then(response => response.json())
-    .then(data => {
-        return data; // Return the data for further processing
-    })
-    .catch(error => console.error(error));
+const fetchQuery = async (url, apiKey, query) => {
+    try {
+        const response = await fetch(url, { method: "POST", headers: headers(apiKey), body: query });
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+    }
+};
 
 // inital query to get distinct workspace IDs
 const initialQuery = JSON.stringify({
@@ -86,6 +88,7 @@ const fetchIDs = async () => {
         console.error(error);
     }
 };
+
 
 // fetching all IDs from all workspaces – needed before fetching issues
 await fetchIDs();
