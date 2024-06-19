@@ -20,10 +20,19 @@ const headers = apiKey => ({
 const workspace = {
     id: "",
     key: "",
+    cycle: "",
+    prevCycle: "",
+    nextCycle: "",
     getID: function () { return this.id; },
     setID: function (id) { this.id = id; },
     getKey: function () { return this.key; },
     setKey: function (key) { this.key = key; },
+    getCycle: function () { return this.cycle; },
+    setCycle: function (cycle) { this.cycle = cycle; },
+    getPrevCycle: function () { return this.prevCycle; },
+    setPrevCycle: function (prevCycle) { this.prevCycle = prevCycle; },
+    getNextCycle: function () { return this.nextCycle; },
+    setNextCycle: function (nextCycle) { this.nextCycle = nextCycle; },
 }
 
 
@@ -32,10 +41,19 @@ function createWorkspace() {
     return {
         id: "",
         key: "",
+        cycle: "",
+        prevCycle: "",
+        nextCycle: "",
         getID: function () { return this.id; },
         setID: function (id) { this.id = id; },
         getKey: function () { return this.key; },
         setKey: function (key) { this.key = key; },
+        getCycle: function () { return this.cycle; },
+        setCycle: function (cycle) { this.cycle = cycle; },
+        getPrevCycle: function () { return this.prevCycle; },
+        setPrevCycle: function (prevCycle) { this.prevCycle = prevCycle; },
+        getNextCycle: function () { return this.nextCycle; },
+        setNextCycle: function (nextCycle) { this.nextCycle = nextCycle; },
     };
 }
 
