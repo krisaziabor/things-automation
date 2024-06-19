@@ -20,16 +20,31 @@ const headers = apiKey => ({
 const workspace = {
     id: "",
     key: "",
+    getID: function () { return this.id; },
+    setID: function (id) { this.id = id; },
+    getKey: function () { return this.key; },
+    setKey: function (key) { this.key = key; },
 }
 
-// getters and setters for workspace struct
-workspace.getID = () => workspace.id;
-workspace.setID = id => workspace.id = id;
-workspace.getKey = () => workspace.key;
-workspace.setKey = key => workspace.key = key;
+
+// initializing workspace with empty variables
+function createWorkspace() {
+    return {
+        id: "",
+        key: "",
+        getID: function () { return this.id; },
+        setID: function (id) { this.id = id; },
+        getKey: function () { return this.key; },
+        setKey: function (key) { this.key = key; },
+    };
+}
 
 // initializing YVA and DOTCOM workspaces
-const yvaWorkspace = workspace;
+const yvaWorkspace = createWorkspace();
+const dotcomWorkspace = createWorkspace();
+const workspaces = [yvaWorkspace, dotcomWorkspace];
+yvaWorkspace.setKey(YVA_API_KEY);
+dotcomWorkspace.setKey(DOTCOM_API_KEY);
 
 const initialQuery = JSON.stringify({
     query:
@@ -61,40 +76,85 @@ const fetchIDs = async () => {
         const dotcomResponse = await fetchQuery(url, DOTCOM_API_KEY, initialQuery);
         const yvaResponse = await fetchQuery(url, YVA_API_KEY, initialQuery);
         // OFFICIAL WAY OF GETTING WORKSPACE ID
+        // console.log(yvaResponse.data.teams.nodes);
+        // console.log("YVA",yvaResponse.data.teams.nodes[0].id);
+        // console.log("DOTCOM",dotcomResponse.data.teams.nodes[0].id);
         const workspaceIDs = [dotcomResponse.data.teams.nodes[0].id, yvaResponse.data.teams.nodes[0].id];
-        console.log(workspaceIDs);
+        // console.log(workspaceIDs);
+        dotcomWorkspace.setID(workspaceIDs[0]);
+        yvaWorkspace.setID(workspaceIDs[1]);
+        return workspaceIDs;
 
     } catch (error) {
         console.error(error);
     }
 };
 
-fetchIDs();
 
-// const allIssues = JSON.stringify({
-//     query:
-//         `{
-//             team(id: "${fetchIDs()[0]}") {
-//                 id
-//                 name
+await fetchIDs();
 
-//                 issues(first: 100) {
-//                     nodes {
-//                         id
-//                         title
-//                         description
-//                         createdAt
-//                         archivedAt
-//                     }
+console.log(dotcomWorkspace.getID(), "DOTCOM");
+console.log(yvaWorkspace.getID(), "YVA");
+// console.log("DOTCOM DATA",dotcomWorkspace.getID(), dotcomWorkspace.getKey());
+// console.log("YVA DATA",yvaWorkspace.getID(), yvaWorkspace.getKey());
+
+
+function queryAllIssues(workspaceID){
+    return JSON.stringify({
+        query: `{
+            team(id: "${workspaceID}") {
+                id
+                name
+                issues(first: 100) {
+                    nodes {
+                        id
+                        title
+                        createdAt
+                    }
+                }
+            }
+        }`
+    });
+}
+
+async function fetchIssues(workspace) {
+    const query = queryAllIssues(workspace.getID());
+    const response = await fetchQuery(url, workspace.getKey(), query);
+    return response;
+}
+
+
+async function fetchAllIssues() {
+    for (let i = 0; i < workspaces.length; i++) {
+        const workspace = workspaces[i];
+        const issues = await fetchIssues(workspace);
+        console.log(issues.data.team.issues.nodes);
+    }
+}
+
+fetchAllIssues();
+
+// const issues = await fetchIssues(dotcomWorkspace);
+// console.log(issues.data.team.issues.nodes);
+
+// const testQuery = JSON.stringify({
+//     query: `{
+//         team(id: "925721b4-6754-4615-a4d5-dfd450736505") {
+//             id
+//             name
+//             issues(first: 100) {
+//                 nodes {
+//                     id
+//                     title
+//                     description
+//                     createdAt
+//                     archivedAt
+//                 }
 //             }
 //         }
-            
-//     }`,
+//     }`
 // });
 
-
-// const fetchIssues = async () => {
-//     try {
-//         const response = await fetchQuery(url, )
-//     }
+// const test = await fetchQuery(url, YVA_API_KEY, testQuery);
+// console.log(test.data.team.issues);
 
