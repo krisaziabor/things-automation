@@ -15,10 +15,12 @@ const headers = apiKey => ({
     "Authorization": apiKey,
 });
 
+// defining Workspace class
 class Workspace {
     constructor(id = "", key = "", cycle = "", prevCycle = "", nextCycle = "") {
         this.id = id;
         this.key = key;
+        // three cycles/sprints of issues – current, previous, next
         this.cycle = cycle;
         this.prevCycle = prevCycle;
         this.nextCycle = nextCycle;
@@ -31,9 +33,20 @@ const yvaWorkspace = new Workspace();
 const dotcomWorkspace = new Workspace();
 const workspaces = [yvaWorkspace, dotcomWorkspace];
 
+// assigning API keys to workspaces
 yvaWorkspace.key = YVA_API_KEY;
 dotcomWorkspace.key = DOTCOM_API_KEY;
 
+
+// general function for fetching data from API
+const fetchQuery = (url, apiKey, query) => fetch(url, { method: "POST", headers: headers(apiKey), body:query })
+    .then(response => response.json())
+    .then(data => {
+        return data; // Return the data for further processing
+    })
+    .catch(error => console.error(error));
+
+// inital query to get distinct workspace IDs
 const initialQuery = JSON.stringify({
     query:
         `{
@@ -51,36 +64,34 @@ const initialQuery = JSON.stringify({
     }`,
 });
 
-const fetchQuery = (url, apiKey, query) => fetch(url, { method: "POST", headers: headers(apiKey), body:query })
-    .then(response => response.json())
-    .then(data => {
-        return data; // Return the data for further processing
-    })
-    .catch(error => console.error(error));
-
-
+// fetching distinct workspace IDs
 const fetchIDs = async () => {
     try {
+        // fetching data from API with two queries for two API keys
         const dotcomResponse = await fetchQuery(url, DOTCOM_API_KEY, initialQuery);
         const yvaResponse = await fetchQuery(url, YVA_API_KEY, initialQuery);
-        // OFFICIAL WAY OF GETTING WORKSPACE ID
-        // console.log(yvaResponse.data.teams.nodes);
-        // console.log("YVA",yvaResponse.data.teams.nodes[0].id);
-        // console.log("DOTCOM",dotcomResponse.data.teams.nodes[0].id);
+
+        // parsing IDs from response JSON
         const workspaceIDs = [dotcomResponse.data.teams.nodes[0].id, yvaResponse.data.teams.nodes[0].id];
-        // console.log(workspaceIDs);
+
+        // assigning IDs to workspace objects
         dotcomWorkspace.id = workspaceIDs[0];
         yvaWorkspace.id = workspaceIDs[1];
+
+        // if successful, return IDs
         return workspaceIDs;
 
     } catch (error) {
+        // if error, log it
         console.error(error);
     }
 };
 
+// fetching all IDs from all workspaces – needed before fetching issues
 await fetchIDs();
 
 
+// query for all issues in a given workspace
 function queryAllIssues(workspaceID){
     return JSON.stringify({
         query: `{
@@ -99,13 +110,14 @@ function queryAllIssues(workspaceID){
     });
 }
 
+// fetching all issues from workspace
 async function fetchIssues(workspace) {
     const query = queryAllIssues(workspace.id);
     const response = await fetchQuery(url, workspace.key, query);
     return response;
 }
 
-
+// fetching issues from all workspaces by iterating through collection/array of workspaces
 async function fetchAllIssues() {
     for (let i = 0; i < workspaces.length; i++) {
         const workspace = workspaces[i];
