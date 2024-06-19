@@ -23,46 +23,6 @@ class Workspace {
         this.prevCycle = prevCycle;
         this.nextCycle = nextCycle;
     }
-
-    getID() {
-        return this.id;
-    }
-
-    setID(id) {
-        this.id = id;
-    }
-
-    getKey() {
-        return this.key;
-    }
-
-    setKey(key) {
-        this.key = key;
-    }
-
-    getCycle() {
-        return this.cycle;
-    }
-
-    setCycle(cycle) {
-        this.cycle = cycle;
-    }
-
-    getPrevCycle() {
-        return this.prevCycle;
-    }
-
-    setPrevCycle(prevCycle) {
-        this.prevCycle = prevCycle;
-    }
-
-    getNextCycle() {
-        return this.nextCycle;
-    }
-
-    setNextCycle(nextCycle) {
-        this.nextCycle = nextCycle;
-    }
 }
 
 
@@ -109,8 +69,8 @@ const fetchIDs = async () => {
         // console.log("DOTCOM",dotcomResponse.data.teams.nodes[0].id);
         const workspaceIDs = [dotcomResponse.data.teams.nodes[0].id, yvaResponse.data.teams.nodes[0].id];
         // console.log(workspaceIDs);
-        dotcomWorkspace.setID(workspaceIDs[0]);
-        yvaWorkspace.setID(workspaceIDs[1]);
+        dotcomWorkspace.id = workspaceIDs[0];
+        yvaWorkspace.id = workspaceIDs[1];
         return workspaceIDs;
 
     } catch (error) {
@@ -118,13 +78,7 @@ const fetchIDs = async () => {
     }
 };
 
-
 await fetchIDs();
-
-// console.log(dotcomWorkspace.getID(), "DOTCOM");
-// console.log(yvaWorkspace.getID(), "YVA");
-// console.log("DOTCOM DATA",dotcomWorkspace.getID(), dotcomWorkspace.getKey());
-// console.log("YVA DATA",yvaWorkspace.getID(), yvaWorkspace.getKey());
 
 
 function queryAllIssues(workspaceID){
@@ -146,8 +100,8 @@ function queryAllIssues(workspaceID){
 }
 
 async function fetchIssues(workspace) {
-    const query = queryAllIssues(workspace.getID());
-    const response = await fetchQuery(url, workspace.getKey(), query);
+    const query = queryAllIssues(workspace.id);
+    const response = await fetchQuery(url, workspace.key, query);
     return response;
 }
 
