@@ -45,12 +45,29 @@ const body = JSON.stringify({
     }`,
 });
 
-
 const fetchWithApiKey = (url, apiKey) => fetch(url, { method: "POST", headers: headers(apiKey), body })
     .then(response => response.json())
-    .then(body => console.log(JSON.stringify(body, null, 2)))
+    .then(data => {
+        return data; // Return the data for further processing
+    })
     .catch(error => console.error(error));
 
-apiKeys.forEach((apiKey) => {
-    fetchWithApiKey(url, apiKey);
-});
+// apiKeys.forEach((apiKey) => {
+//     fetchWithApiKey(url, apiKey);
+// });
+
+const fetchData = async () => {
+    try {
+        const dotcomResponse = await fetchWithApiKey(url, DOTCOM_API_KEY);
+        const yvaResponse = await fetchWithApiKey(url, YVA_API_KEY);
+        // OFFICIAL WAY OF GETTING WORKSPACE ID
+        const workspaceIDs = [dotcomResponse.data.teams.nodes[0].id, yvaResponse.data.teams.nodes[0].id];
+        console.log(workspaceIDs);
+
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+fetchData();
+
