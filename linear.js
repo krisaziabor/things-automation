@@ -116,29 +116,30 @@ function queryCurrCycleIssues(workspaceID){
     });
 }
 
-// // query for all issues in the previous cycle/sprint in a given workspace
-// function queryPastCycleIssues(workspaceID){
-//     return JSON.stringify({
-//         query: `{
-//             team(id: "$(workspaceID)") {
-//                 id
-//                 name
-//                 cycles(last: 2) {
-//                     nodes {
-//                         id
-//                         issues(first: 100) {
-//                             nodes {
-//                                 id
-//                                 title
-//                                 createdAt
-//                             }
-//                         }
-//                     }
-//                 }   
-//             }
-//         }`
-//     })
-// }
+// query for all issues in the previous cycle/sprint in a given workspace
+function queryCycleHistory(workspaceID){
+    return JSON.stringify({
+        query: `{
+            team(id: "${workspaceID}") {
+                id
+                name
+                cycles(first: 4) {
+                    nodes {
+                        id
+                        startsAt
+                        issues(first: 100) {
+                            nodes {
+                                id
+                                title
+                                createdAt
+                            }
+                        }
+                    }
+                }   
+            }
+        }`
+    })
+}
 
 // fetching all issues from workspace
 async function fetchIssues(workspace) {
@@ -147,14 +148,45 @@ async function fetchIssues(workspace) {
     return response;
 }
 
+async function fetchCycleHistory(workspace) {
+    const query = queryCycleHistory(workspace.id);
+    const response = await fetchQuery(url, workspace.key, query);
+    return response;
+}
+
 // fetching issues from all workspaces by iterating through collection/array of workspaces
-async function fetchAllIssues() {
+async function fetchCurrIssues() {
     for (let i = 0; i < workspaces.length; i++) {
         const workspace = workspaces[i];
         const issues = await fetchIssues(workspace);
-        // console.log(issues.data.team.issues.nodes);
+        console.log("CURRENT ISSUES");
         console.log(issues.data.team.activeCycle.issues.nodes);
     }
 }
 
-fetchAllIssues();
+async function fetchPrevIssues() {
+    for (let i = 0; i < workspaces.length; i++) {
+        const workspace = workspaces[i];
+        const issues = await fetchCycleHistory(workspace);
+        console.log("PREVIOUS ISSUES");
+        if (issues.data.team.cycles.nodes.length < 4) {
+            console.log("Not enough cycles to fetch previous cycle issues");
+        }
+        else {
+            console.log(issues.data.team.cycles.nodes[3].issues.nodes);
+        }
+    }
+}
+
+async function fetchNextIssues() {
+    for (let i = 0; i < workspaces.length; i++) {
+        const workspace = workspaces[i];
+        const issues = await fetchCycleHistory(workspace);
+        console.log("NEXT ISSUES");
+        console.log(issues.data.team.cycles.nodes[1].issues.nodes);
+    }
+}
+
+await fetchCurrIssues();
+await fetchPrevIssues();
+await fetchNextIssues();
