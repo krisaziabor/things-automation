@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import fetch from "node-fetch";
+import { initialQuery, queryCurrCycleIssues, queryCycleHistory } from "./queries.js";
 
 // configuring private environment, securly holding API keys
 dotenv.config({ path: './private.env' });
@@ -27,7 +28,6 @@ class Workspace {
     }
 }
 
-
 // initializing YVA and DOTCOM workspaces
 const yvaWorkspace = new Workspace();
 const dotcomWorkspace = new Workspace();
@@ -47,24 +47,6 @@ const fetchQuery = async (url, apiKey, query) => {
         console.error(error);
     }
 };
-
-// inital query to get distinct workspace IDs
-const initialQuery = JSON.stringify({
-    query:
-        `{
-            viewer {
-                id
-                name
-                email
-        }
-            teams {
-                nodes {
-                    id
-                    name
-                }
-        }
-    }`,
-});
 
 // fetching distinct workspace IDs
 const fetchIDs = async () => {
@@ -89,57 +71,8 @@ const fetchIDs = async () => {
     }
 };
 
-
 // fetching all IDs from all workspaces – needed before fetching issues
 await fetchIDs();
-
-
-// query for all issues in the current cycle/sprint in a given workspace
-function queryCurrCycleIssues(workspaceID){
-    return JSON.stringify({
-        query: `{
-            team(id: "${workspaceID}") {
-                id
-                name
-                activeCycle {
-                    id
-                    issues(first: 100) {
-                        nodes {
-                            id
-                            title
-                            createdAt
-                        }
-                    }
-                }
-            }
-        }`
-    });
-}
-
-// query for all issues in the previous cycle/sprint in a given workspace
-function queryCycleHistory(workspaceID){
-    return JSON.stringify({
-        query: `{
-            team(id: "${workspaceID}") {
-                id
-                name
-                cycles(first: 4) {
-                    nodes {
-                        id
-                        startsAt
-                        issues(first: 100) {
-                            nodes {
-                                id
-                                title
-                                createdAt
-                            }
-                        }
-                    }
-                }   
-            }
-        }`
-    })
-}
 
 // fetching all issues from workspace
 async function fetchIssues(workspace) {
