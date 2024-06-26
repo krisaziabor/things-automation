@@ -25,3 +25,28 @@ function queryAllIssues(workspaceID){
     });
 }
 ```
+
+### Query to get first 100 issues in the current cycle of a workspace – (currently being used) –
+
+```python
+function queryCurrCycleIssues(workspaceID){
+    return JSON.stringify({
+        query: `{
+            team(id: "${workspaceID}") {
+                id
+                name
+                activeCycle {
+                    id
+                    issues(first: 100) {
+                        nodes {
+                            id
+                            title
+                            createdAt
+                        }
+                    }
+                }
+            }
+        }`
+    });
+}
+```

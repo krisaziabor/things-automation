@@ -95,17 +95,20 @@ await fetchIDs();
 
 
 // query for all issues in a given workspace
-function queryAllIssues(workspaceID){
+function queryCurrCycleIssues(workspaceID){
     return JSON.stringify({
         query: `{
             team(id: "${workspaceID}") {
                 id
                 name
-                issues(first: 100) {
-                    nodes {
-                        id
-                        title
-                        createdAt
+                activeCycle {
+                    id
+                    issues(first: 100) {
+                        nodes {
+                            id
+                            title
+                            createdAt
+                        }
                     }
                 }
             }
@@ -115,7 +118,7 @@ function queryAllIssues(workspaceID){
 
 // fetching all issues from workspace
 async function fetchIssues(workspace) {
-    const query = queryAllIssues(workspace.id);
+    const query = queryCurrCycleIssues(workspace.id);
     const response = await fetchQuery(url, workspace.key, query);
     return response;
 }
@@ -125,7 +128,8 @@ async function fetchAllIssues() {
     for (let i = 0; i < workspaces.length; i++) {
         const workspace = workspaces[i];
         const issues = await fetchIssues(workspace);
-        console.log(issues.data.team.issues.nodes);
+        // console.log(issues.data.team.issues.nodes);
+        console.log(issues.data.team.activeCycle.issues.nodes);
     }
 }
 
