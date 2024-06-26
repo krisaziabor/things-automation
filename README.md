@@ -1,2 +1,2 @@
-# things-automation
-Automating using Things scheme and other productivity/product management services
+# linear-automation
+Automating project management (Linear issues) using Things scheme and other productivity/product management services
