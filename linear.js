@@ -94,7 +94,7 @@ const fetchIDs = async () => {
 await fetchIDs();
 
 
-// query for all issues in a given workspace
+// query for all issues in the current cycle/sprint in a given workspace
 function queryCurrCycleIssues(workspaceID){
     return JSON.stringify({
         query: `{
@@ -115,6 +115,30 @@ function queryCurrCycleIssues(workspaceID){
         }`
     });
 }
+
+// // query for all issues in the previous cycle/sprint in a given workspace
+// function queryPastCycleIssues(workspaceID){
+//     return JSON.stringify({
+//         query: `{
+//             team(id: "$(workspaceID)") {
+//                 id
+//                 name
+//                 cycles(last: 2) {
+//                     nodes {
+//                         id
+//                         issues(first: 100) {
+//                             nodes {
+//                                 id
+//                                 title
+//                                 createdAt
+//                             }
+//                         }
+//                     }
+//                 }   
+//             }
+//         }`
+//     })
+// }
 
 // fetching all issues from workspace
 async function fetchIssues(workspace) {
