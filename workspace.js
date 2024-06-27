@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { queryCurrCycleIssues, queryCycleHistory } from "./queries.js";
+import { queryCurrCycleIssues, queryCycleHistory, initialQuery } from "./queries.js";
 import { GRAPHQL } from "./config.js";
 
 
@@ -30,6 +30,22 @@ export const fetchQuery = async (url, apiKey, query) => {
         console.error(error);
     }
 };
+
+// fetching distinct workspace IDs
+export async function fetchIDs(workspace_array){
+    const idArray = new Array(workspace_array.length);
+
+    for (let i = 0; i < workspace_array.length; i++) {
+        const response = await fetchQuery(GRAPHQL.url, workspace_array[i].key, initialQuery);
+        // console.log(response.data.viewer.id);
+        // console.log(response.data.teams.nodes[0].id);
+        workspace_array[i].id = response.data.teams.nodes[0].id;
+        idArray[i] = response.data.teams.nodes[0].id;
+    }
+
+    // console.log(idArray);
+    return idArray;
+}
 
 // fetching all issues from workspace
 export async function fetchIssues(workspace) {
