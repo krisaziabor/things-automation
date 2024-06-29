@@ -1,5 +1,7 @@
 # Linear Automation
 
+![Image](/assets/linear-project-brief.png)
+
 ## Project Management with Linear, GraphQL, and Things
 
 This project aims to optimize my current workflow of project management where my work is distributed across multiple workspaces in Linear. By utilizing their API, I can create two unified views for the collection of issues for my upcoming projects, **Yale Visual Artists Dot Com** and **Kris Aziabor Dot Com**.
