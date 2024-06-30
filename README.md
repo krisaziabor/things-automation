@@ -6,6 +6,8 @@
 
 This project aims to optimize my current workflow of project management where my work is distributed across multiple workspaces in Linear. By utilizing their API, I can create two unified views for the collection of issues for my upcoming projects, **Yale Visual Artists Dot Com** and **Kris Aziabor Dot Com**.
 
+![Image](/assets/brief-2.png)
+
 ### Workspaces in Linear
 
 Containing issues rooted in "cycles"/sprints, Linear is the foundation for my project management system. However, the tasks and issues are spread across multiple workspaces and Linear offers no support/functionality for viewing them alltogether.
